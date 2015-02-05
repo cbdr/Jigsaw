@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- HTML5 Hello world by kirupa - http://www.kirupa.com/html5/getting_your_feet_wet_html5_pg1.htm -->
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>Jigsaw</title>
+<script src="https://code.createjs.com/easeljs-0.8.0.min.js"></script>
+<script src="puzzle.js"></script>
+<script>
+		    var stage, pieces;
+		    var colors = ['red', 'green', 'blue', 'yellow', 'brown', 'pink', 'grey'];
+			function init(){
+				stage = new createjs.Stage("tabletop");
+				piece1 = new puzzle_piece('green', 'green');
+				piece2 = new puzzle_piece('blue', 'blue');
+				stage.addChild(piece1, piece2);
+				stage.update();
+				
+				piece1.on("pressmove",function(evt) {
+					// currentTarget will be the container that the event listener was added to:
+					evt.currentTarget.x = evt.stageX - (200/2);
+					evt.currentTarget.y = evt.stageY - (150/2);
+					// make sure to redraw the stage to show the change:
+					stage.update();   
+				});
+				piece2.on("pressmove",function(evt) {
+					// currentTarget will be the container that the event listener was added to:
+					evt.currentTarget.x = evt.stageX - (200/2);
+					evt.currentTarget.y = evt.stageY - (150/2);
+					// make sure to redraw the stage to show the change:
+					stage.update();   
+				});
+			}
+			
+		</script>
+</head>
+
+<body onload="init();">
+	<div id="puzzleSpace">
+		<button></button>
+		<canvas id="tabletop" width=500px height=500px></canvas>
+	</div>
+
+</body>
+</html>
