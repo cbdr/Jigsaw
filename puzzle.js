@@ -1,15 +1,19 @@
 (function() {
 
-function puzzle_piece(label, color) {
+function puzzle_piece(parent, label, color) {
 	this.Container_constructor();
-	
+
 	this.color = color;
 	this.label = label;
-	
+	this.width = 200;
+	this.height = 150;
+	this.x = 0;
+	this.y = 0;
+	this.locked = false;
+	this.next = null;
 	this.setup();
 }
 var p = createjs.extend(puzzle_piece, createjs.Container);
-
 
 p.setup = function() {
 	var piece = this.makePiece(this.color);
@@ -17,25 +21,23 @@ p.setup = function() {
 	text.textBaseline = "top";
 	text.textAlign = "center";
 
-	text.x = 200/2;
+	text.x = this.width/2;
 	text.y = 60;
-	
-	this.addChild(piece, text); 
+
+	this.addChild(piece, text);
 	this.on("pressmove", this.handlePressMove);
-	this.on("rollover", this.handleRollOver);
-	this.on("rollout", this.handleRollOver);
 	this.cursor = "pointer";
 
 	this.mouseChildren = false;
 	this.count = 0;
 } ;
 
-p.handleRollOver = function(event) {       
-	this.alpha = event.type == "rollover" ? 0.4 : 1;
-};
-
-p.handlePressMove = function(event) {       
-	//alert("pressmove");
+p.handlePressMove = function(event) {
+	if (!this.locked){
+		this.x = event.stageX - (this.width/2);
+		this.y = event.stageY - (this.height/2);
+		this.parent.update();
+	}
 };
 
 p.makePiece = function makePiece(color){
@@ -91,4 +93,72 @@ p.makePiece = function makePiece(color){
 			};
 
 window.puzzle_piece = createjs.promote(puzzle_piece, "Container");
+}());
+
+
+(function() {
+
+function start_piece() {
+	this.puzzle_piece_constructor();
+
+	this.color = 'gold';
+	this.label = 'START';
+	this.width = 200;
+	this.height = 100;
+	this.x = 835;
+	this.y = 0;
+	this.next = null;
+	this.setup();
+}
+var p = createjs.extend(start_piece, puzzle_piece);
+
+p.setup = function() {
+	var piece = this.makePiece(this.color);
+	var text = new createjs.Text(this.label, "20px Arial", "#000");
+	text.textBaseline = "top";
+	text.textAlign = "center";
+
+	text.x = (this.width/2)-10;
+	text.y = 10;
+
+	this.addChild(piece, text);
+	this.on("pressmove", this.handlePressMove);
+	this.cursor = "pointer";
+
+	this.mouseChildren = false;
+	this.count = 0;
+} ;
+
+p.handlePressMove = function(event) {
+};
+
+p.makePiece = function makePiece(color){
+				var cont = new createjs.Container();
+				var piece = new createjs.Shape();
+				piece.graphics.beginFill(color);
+				piece.graphics.moveTo(50,0)
+				.lineTo(200,0)
+				.lineTo(200,100)
+				.lineTo(145,100)
+				.quadraticCurveTo(125,90,145,80)
+				.quadraticCurveTo(125,50,105,80)
+				.quadraticCurveTo(125,90,105,100)
+				.lineTo(50,100)
+				.lineTo(50,0);
+				var outline = new createjs.Shape();
+				outline.graphics.beginStroke('black');
+				outline.graphics.moveTo(50,0)
+				.lineTo(200,0)
+				.lineTo(200,100)
+				.lineTo(145,100)
+				.quadraticCurveTo(125,90,145,80)
+				.quadraticCurveTo(125,50,105,80)
+				.quadraticCurveTo(125,90,105,100)
+				.lineTo(50,100)
+				.lineTo(50,0);
+				cont.addChild(piece, outline);
+				return cont;
+			};
+
+window.start_piece = createjs.promote(start_piece, "puzzle_piece");
 }());
